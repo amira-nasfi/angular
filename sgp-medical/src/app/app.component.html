@@ -1,0 +1,10 @@
+<nav class='nav-medical' style="padding: 16px; background: #2c3e50; color: white; display: flex; gap: 16px; margin-bottom: 20px;">
+  <a routerLink='/tableau-de-bord' routerLinkActive='actif' [routerLinkActiveOptions]="{exact: true}" style="color: white; text-decoration: none;">Tableau de bord</a>
+  <a routerLink='/patients' routerLinkActive='actif' style="color: white; text-decoration: none;">Patients</a>
+  <a routerLink='/consultations' routerLinkActive='actif' style="color: white; text-decoration: none;">Consultations</a>
+  <a routerLink='/ordonnances' routerLinkActive='actif' style="color: white; text-decoration: none;">Ordonnances</a>
+</nav>
+
+<main class='contenu-principal' style="padding: 0 20px;">
+  <router-outlet></router-outlet>
+</main>

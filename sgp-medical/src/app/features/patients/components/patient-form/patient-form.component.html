@@ -1,0 +1,141 @@
+<form [formGroup]="formulaire" (ngSubmit)="onSoumettre()" novalidate class="medical-form">
+  <h2>{{ modeEdition ? 'Modifier le patient' : 'Nouveau patient' }}</h2>
+
+  <div class="form-section">
+    <h3>Identite</h3>
+    <div class="champ">
+      <label>INS (Identite Nationale de Sante) *</label>
+      <input formControlName="ins" type="text" placeholder="1850612075047">
+      <div class="erreur" *ngIf="formulaire.get('ins')?.invalid && formulaire.get('ins')?.touched">
+        <span *ngIf="formulaire.get('ins')?.errors?.['required']">L'INS est obligatoire</span>
+        <span *ngIf="formulaire.get('ins')?.errors?.['pattern']">Format invalide (13 chiffres, commencant par 1 ou 2)</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="champ">
+        <label>Nom *</label>
+        <input formControlName="nom">
+      </div>
+      <div class="champ">
+        <label>Prenom *</label>
+        <input formControlName="prenom">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="champ">
+        <label>Date de Naissance *</label>
+        <input type="date" formControlName="dateNaissance">
+        <span class="erreur" *ngIf="formulaire.get('dateNaissance')?.errors?.['dateAvenir']">La date ne peut etre dans le futur</span>
+      </div>
+      <div class="champ">
+        <label>Sexe *</label>
+        <select formControlName="sexe">
+          <option value="">-- Choisir --</option>
+          <option value="M">Masculin</option>
+          <option value="F">Feminin</option>
+          <option value="I">Indetermine</option>
+          <option value="U">Inconnu</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>Contact</h3>
+    <div class="row">
+      <div class="champ">
+        <label>Telephone *</label>
+        <input formControlName="telephone" placeholder="0612345678">
+      </div>
+      <div class="champ">
+        <label>Email</label>
+        <input formControlName="email">
+      </div>
+    </div>
+
+    <fieldset formGroupName="adresse">
+      <legend>Adresse</legend>
+      <div class="champ">
+        <input formControlName="ligne1" placeholder="Numero et nom de rue">
+      </div>
+      <div class="row">
+        <div class="champ">
+          <input formControlName="codePostal" placeholder="Code Postal">
+        </div>
+        <div class="champ">
+          <input formControlName="ville" placeholder="Ville">
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="form-section">
+    <h3>Dossier Medical</h3>
+    <div class="row">
+      <div class="champ">
+        <label>Groupe Sanguin</label>
+        <select formControlName="groupeSanguin">
+          <option value="">Non precise</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+      </div>
+      <div class="champ">
+        <label>ID Medecin Traitant *</label>
+        <input formControlName="medecinTraitantId">
+      </div>
+    </div>
+
+    <div formArrayName="antecedents" class="array-section">
+      <label>Antecedents medicaux</label>
+      <div *ngFor="let atcd of antecedents.controls; let i = index" class="array-row">
+        <input [formControlName]="i" placeholder="Ex: Diabete type 2">
+        <button type="button" class="btn-danger" (click)="antecedents.removeAt(i)">x</button>
+      </div>
+      <button type="button" class="btn-add" (click)="ajouterAntecedent()">+ Antecedent</button>
+    </div>
+
+    <div formArrayName="allergies" class="array-section">
+      <label>Allergies</label>
+      <div *ngFor="let al of allergies.controls; let i = index" [formGroupName]="i" class="allergy-group">
+        <input formControlName="substance" placeholder="Substance">
+        <input formControlName="reaction" placeholder="Reaction">
+        <select formControlName="severite">
+          <option value="legere">Legere</option>
+          <option value="moderee">Moderee</option>
+          <option value="severe">Severe</option>
+        </select>
+        <button type="button" class="btn-danger" (click)="allergies.removeAt(i)">Supprimer</button>
+      </div>
+      <button type="button" class="btn-add" (click)="ajouterAllergie()">+ Allergie</button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="validation-summary" *ngIf="formulaire.invalid">
+      <strong>Champs invalides:</strong>
+      <span *ngIf="formulaire.get('ins')?.invalid">INS, </span>
+      <span *ngIf="formulaire.get('nom')?.invalid">Nom, </span>
+      <span *ngIf="formulaire.get('prenom')?.invalid">Prenom, </span>
+      <span *ngIf="formulaire.get('dateNaissance')?.invalid">Date de naissance, </span>
+      <span *ngIf="formulaire.get('sexe')?.invalid">Sexe, </span>
+      <span *ngIf="formulaire.get('telephone')?.invalid">Telephone, </span>
+      <span *ngIf="formulaire.get('adresse.ligne1')?.invalid">Adresse, </span>
+      <span *ngIf="formulaire.get('adresse.codePostal')?.invalid">Code postal, </span>
+      <span *ngIf="formulaire.get('adresse.ville')?.invalid">Ville, </span>
+      <span *ngIf="formulaire.get('medecinTraitantId')?.invalid">Medecin traitant</span>
+    </div>
+    <button type="button" class="btn-secondary" routerLink="/patients">Annuler</button>
+    <button type="submit" class="btn-primary" [disabled]="formulaire.invalid">
+      {{ modeEdition ? 'Enregistrer les modifications' : 'Creer le patient' }}
+    </button>
+  </div>
+</form>

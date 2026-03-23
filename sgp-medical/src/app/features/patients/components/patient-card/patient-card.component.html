@@ -1,0 +1,31 @@
+<div class="patient-card" (click)="selectionnerPatient()">
+  <div class="header">
+    <div class="avatar">{{ initialles }}</div>
+    <div class="info-base">
+      <h3>{{ patient.nom | uppercase }} {{ patient.prenom }}</h3>
+      <span class="age">{{ age }} ans</span>
+      <span class="sexe">{{ patient.sexe }}</span>
+    </div>
+    
+    <div class="urgency-badge" *ngIf="patient.niveauUrgence">
+      <span [ngClass]="'badge-' + patient.niveauUrgence">{{ patient.niveauUrgence }}</span>
+    </div>
+  </div>
+
+  <div class="details">
+    <p>
+      <strong>INS:</strong> 
+      <span *ngIf="showSensitiveData">{{ patient.ins }}</span>
+      <span *ngIf="!showSensitiveData">*** *** *** ***</span>
+    </p>
+    <p><strong>Statut:</strong> {{ patient.statut }}</p>
+    
+    <div class="allergies" *ngIf="patient.allergies?.length">
+      <span class="icon" title="Allergies ({{patient.allergies.length}})">⚠️ Allergies ({{patient.allergies.length}})</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button (click)="$event.stopPropagation(); signalerUrgence()" class="btn-urgence">URGENCE</button>
+  </div>
+</div>
